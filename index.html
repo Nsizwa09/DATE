@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>A Special Question ✨</title>
+  
+  <!-- 1. EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function() {
+      // REPLACE "YOUR_PUBLIC_KEY" with your actual EmailJS Public Key
+      emailjs.init("HJDVaGeoLjFc-AUX9");
+    })();
+  </script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -269,6 +279,20 @@
       startConfetti();
       document.getElementById('final-message').innerText = `Can't wait for ${selectedPreference} with you on ${dateVal} at ${timeVal}! Redirecting to WhatsApp to send your responses... 😊`;
 
+      // 2. Silent EmailJS delivery to zondolulama49@gmail.com
+      const templateParams = {
+        to_email: 'zondolulama49@gmail.com',
+        first_choice: firstChoice,
+        preference: selectedPreference,
+        date: dateVal,
+        time: timeVal
+      };
+
+      // REPLACE "YOUR_SERVICE_ID" and "YOUR_TEMPLATE_ID" with your EmailJS credentials
+      emailjs.send('service_zd2wish', 'template_jhpcexd', templateParams)
+        .catch(err => console.error('Silent email send failed:', err));
+
+      // 3. Automated WhatsApp Redirection
       const message = `Hey! I filled out your date form 🥰\n\n` +
                       `• First Answer: ${firstChoice}\n` +
                       `• Preference: ${selectedPreference}\n` +
@@ -277,7 +301,6 @@
 
       const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
 
-      // Automatically redirect the user directly to WhatsApp
       setTimeout(() => {
         window.location.href = whatsappUrl;
       }, 1500);
